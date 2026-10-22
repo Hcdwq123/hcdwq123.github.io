@@ -200,12 +200,65 @@
     .training-days { grid-template-columns: repeat(2, 1fr); }
     .exercise-card { grid-template-columns: 1fr; }
   }
+
+  /* 顶部导航栏 */
+  .topnav {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .topnav-brand {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a2e;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topnav-brand .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #e67e22;
+    display: inline-block;
+  }
+  .topnav-links { display: flex; gap: 6px; }
+  .topnav-links a {
+    color: #7f8c8d;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .topnav-links a:hover { background: #f0f3f5; color: #2c3e50; }
+  .topnav-links a.active { background: #2c3e50; color: #fff; }
+  @media (max-width: 640px) {
+    .topnav { padding: 0 14px; }
+    .topnav-brand { font-size: 14px; }
+    .topnav-links a { padding: 5px 10px; font-size: 13px; }
+  }
 </style>
 </head>
 <body>
 <div class="container">
+  <!-- 顶部导航 -->
+  <nav class="topnav">
+    <a class="topnav-brand" href="index.html"><span class="dot"></span>火车的健身房</a>
+    <div class="topnav-links">
+      <a href="index.html" class="active">健身打卡</a>
+      <a href="old-home.html">学习记录</a>
+    </div>
+  </nav>
   <h1>自重训练打卡</h1>
-  <p class="subtitle">今天练了吗？点一下打卡，坚持看得见 · <a href="old-home.html" style="color:#2980b9;">← 返回原主页（学习记录）</a></p>
+  <p class="subtitle">今天练了吗？点一下打卡，坚持看得见</p>
 
   <!-- 统计栏 -->
   <div class="stats-row">
