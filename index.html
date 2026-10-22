@@ -1,99 +1,853 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>火车的主页</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-      background: #f6f8fa; color: #1f2328; line-height: 1.7;
-    }
-    .hero {
-      background: linear-gradient(135deg, #0969da 0%, #1a7f37 100%);
-      color: #fff; text-align: center; padding: 80px 20px 60px;
-    }
-    .avatar {
-      width: 90px; height: 90px; border-radius: 50%;
-      background: rgba(255,255,255,.2); border: 3px solid rgba(255,255,255,.6);
-      color: #fff; font-size: 38px; font-weight: 700;
-      display: inline-flex; align-items: center; justify-content: center;
-      margin-bottom: 20px;
-    }
-    .hero h1 { font-size: 34px; margin-bottom: 10px; }
-    .hero p { font-size: 17px; opacity: .92; }
-    .wrap { max-width: 760px; margin: -30px auto 0; padding: 0 20px 40px; }
-    .card {
-      background: #fff; border: 1px solid #d0d7de; border-radius: 14px;
-      padding: 26px 30px; margin-bottom: 18px;
-      box-shadow: 0 2px 8px rgba(31,35,40,.05);
-    }
-    .card h2 { font-size: 19px; margin-bottom: 14px; color: #0969da; }
-    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .tag {
-      background: #ddf4e4; color: #1a7f37; border-radius: 20px;
-      padding: 5px 14px; font-size: 14px; font-weight: 600;
-    }
-    .proj {
-      border: 1px solid #d0d7de; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
-    }
-    .proj a { color: #0969da; font-weight: 700; }
-    .proj small { color: #57606a; }
-    a { color: #0969da; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    footer { text-align: center; color: #8b949e; font-size: 14px; padding: 20px 0 50px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自重训练 · 打卡与动作教学</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f5f6f8;
+    color: #2c3e50;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* 顶部标题 */
+  h1 { text-align: center; font-size: 28px; margin-bottom: 4px; color: #1a1a2e; }
+  .subtitle { text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 28px; }
+
+  /* 统计卡片 */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .stat-number { font-size: 32px; font-weight: 700; color: #e67e22; }
+  .stat-label { font-size: 13px; color: #7f8c8d; margin-top: 4px; }
+
+  /* 本周训练打卡 */
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 28px 0 16px;
+    padding-left: 12px;
+    border-left: 4px solid #e67e22;
+  }
+  .training-days {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .day-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .day-card:hover { transform: translateY(-2px); }
+  .day-card.done {
+    background: #e8f8f0;
+    border-color: #27ae60;
+  }
+  .day-name { font-size: 15px; font-weight: 600; color: #2c3e50; }
+  .day-type { font-size: 12px; color: #7f8c8d; margin: 4px 0 10px; }
+  .day-btn {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    background: #ecf0f1;
+    color: #7f8c8d;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .day-card.done .day-btn {
+    background: #27ae60;
+    color: #fff;
+  }
+
+  /* 日历 */
+  .calendar-wrap {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 28px;
+  }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .calendar-month { font-size: 16px; font-weight: 600; }
+  .calendar-nav {
+    background: #ecf0f1;
+    border: none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+  }
+  .calendar-head { font-size: 12px; color: #95a5a6; padding: 6px 0; }
+  .calendar-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    border-radius: 50%;
+    position: relative;
+  }
+  .calendar-cell.checked {
+    background: #27ae60;
+    color: #fff;
+    font-weight: 600;
+  }
+  .calendar-cell.today {
+    border: 2px solid #e67e22;
+  }
+  .calendar-cell.other-month { color: #ddd; }
+
+  /* 动作教学卡片 */
+  .exercise-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+  }
+  .exercise-gif {
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .exercise-gif img { max-width: 100%; border-radius: 8px; }
+  .exercise-info { padding: 20px 24px; }
+  .exercise-number {
+    display: inline-block;
+    background: #2c3e50;
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+  }
+  .exercise-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: #1a1a2e; }
+  .info-section { margin-bottom: 10px; }
+  .info-label { font-size: 12px; font-weight: 600; color: #e67e22; margin-bottom: 2px; }
+  .info-content { font-size: 13px; color: #34495e; padding-left: 10px; }
+  .info-content ul { list-style: none; padding-left: 0; }
+  .info-content li { padding: 1px 0; padding-left: 14px; position: relative; }
+  .info-content li::before { content: "•"; position: absolute; left: 0; color: #e67e22; }
+  .breath-tag {
+    display: inline-block;
+    background: #eaf6ff;
+    color: #2980b9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+  .common-mistake {
+    background: #fff5f5;
+    border-left: 3px solid #e74c3c;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: #c0392b;
+    margin-top: 6px;
+  }
+  .category-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 28px 0 14px;
+    padding-left: 12px;
+    border-left: 4px solid #e67e22;
+  }
+
+  @media (max-width: 768px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .training-days { grid-template-columns: repeat(2, 1fr); }
+    .exercise-card { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-  <div class="hero">
-    <div class="avatar">火</div>
-    <h1>你好，我是火车</h1>
-    <p>正在学习编程，用 GitHub 记录成长的每一步</p>
-  </div>
+<div class="container">
+  <h1>自重训练打卡</h1>
+  <p class="subtitle">今天练了吗？点一下打卡，坚持看得见 · <a href="old-home.html" style="color:#2980b9;">← 返回原主页（学习记录）</a></p>
 
-  <div class="wrap">
-    <div class="card">
-      <h2>关于我</h2>
-      <p>一个编程初学者，喜欢用代码解决问题。这个主页用来记录我的学习笔记、项目作品和成长轨迹。</p>
+  <!-- 统计栏 -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-number" id="streakDays">0</div>
+      <div class="stat-label">连续打卡（天）</div>
     </div>
-
-    <div class="card">
-      <h2>我正在学</h2>
-      <div class="tags">
-        <span class="tag">Git / GitHub</span>
-        <span class="tag">HTML / CSS</span>
-        <span class="tag">Python</span>
-        <span class="tag">编程基础</span>
-      </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalDays">0</div>
+      <div class="stat-label">累计打卡（天）</div>
     </div>
-
-    <div class="card">
-      <h2>我的项目</h2>
-      <div class="proj">
-        <a href="https://github.com/Hcdwq123/hello-world" target="_blank">hello-world</a><br>
-        <small>我的第一个 Git 仓库，完成了从建仓到推送的完整流程</small>
-      </div>
-      <div class="proj">
-        <a href="https://hcdwq123.github.io" target="_blank">个人主页</a><br>
-        <small>这个网站本身，基于 GitHub Pages 搭建</small>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>博客（建设中）</h2>
-      <p>接下来会在这里写我的学习笔记，比如《我是怎么配通 GitHub SSH 的》。</p>
-    </div>
-
-    <div class="card">
-      <h2>联系我</h2>
-      <ul style="padding-left:20px;">
-        <li>GitHub：<a href="https://github.com/Hcdwq123" target="_blank">github.com/Hcdwq123</a></li>
-        <li>邮箱：279565247@qq.com</li>
-      </ul>
+    <div class="stat-card">
+      <div class="stat-number" id="weekDays">0</div>
+      <div class="stat-label">本周打卡（天）</div>
     </div>
   </div>
 
-  <footer>用 ❤️ 和 GitHub Pages 制作 · © 2026 火车</footer>
+  <!-- 本周训练日打卡 -->
+  <div class="section-title">今天完成了哪个训练日？</div>
+  <div class="training-days" id="trainingDays">
+    <div class="day-card" data-day="strength">
+      <div class="day-name">力量日</div>
+      <div class="day-type">慢离心 · 主项留余量</div>
+      <button class="day-btn">打卡</button>
+    </div>
+    <div class="day-card" data-day="power">
+      <div class="day-name">爆发日</div>
+      <div class="day-type">击掌 · 跳跃 · 神经募集</div>
+      <button class="day-btn">打卡</button>
+    </div>
+    <div class="day-card" data-day="volume">
+      <div class="day-name">容量日</div>
+      <div class="day-type">高次数 · 超级组 · 力竭</div>
+      <button class="day-btn">打卡</button>
+    </div>
+    <div class="day-card" data-day="technique">
+      <div class="day-name">技术日</div>
+      <div class="day-type">超慢控制 · 动作质量</div>
+      <button class="day-btn">打卡</button>
+    </div>
+  </div>
+
+  <!-- 打卡日历 -->
+  <div class="section-title">打卡日历</div>
+  <div class="calendar-wrap">
+    <div class="calendar-header">
+      <button class="calendar-nav" id="prevMonth">‹</button>
+      <div class="calendar-month" id="calendarMonth"></div>
+      <button class="calendar-nav" id="nextMonth">›</button>
+    </div>
+    <div class="calendar-grid">
+      <div class="calendar-head">日</div>
+      <div class="calendar-head">一</div>
+      <div class="calendar-head">二</div>
+      <div class="calendar-head">三</div>
+      <div class="calendar-head">四</div>
+      <div class="calendar-head">五</div>
+      <div class="calendar-head">六</div>
+      <div id="calendarCells" style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;"></div>
+    </div>
+  </div>
+
+  <!-- 动作教学参考 -->
+  <div class="section-title">动作教学参考</div>
+
+  <div class="category-title">胸部推类动作</div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="gifs/pushup.gif" alt="标准俯卧撑"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 01</span>
+      <div class="exercise-title">标准俯卧撑</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>双手撑地，略宽于肩，手掌向外旋转约15–30度</li>
+          <li>手肘内旋，手肘与身体夹角约45度（不是完全打开成T字）</li>
+          <li>身体从头到脚跟成一条直线，核心收紧，臀部夹紧</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作步骤</div>
+        <div class="info-content"><ul>
+          <li>下降：缓慢控制下落，胸部接近地面约一拳距离</li>
+          <li>推起：胸部发力推起身体，回到起始位置</li>
+          <li>节奏：下放3秒，推起1秒</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">下降吸气</span>
+          <span class="breath-tag">推起呼气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：塌腰、撅臀、手肘外展过大成T字形（伤肩）、下巴前伸</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="gifs/pushup_incline.gif" alt="下斜俯卧撑"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 02</span>
+      <div class="exercise-title">下斜俯卧撑（脚垫高）</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>双脚放在椅子或台阶上，双手撑地与肩同宽</li>
+          <li>身体成一条斜线，头到脚保持直线</li>
+          <li>手肘同样保持45度夹角，核心收紧</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作要点</div>
+        <div class="info-content"><ul>
+          <li>重点刺激上胸肌（锁骨附近）</li>
+          <li>难度高于标准俯卧撑，适合进阶训练</li>
+          <li>保持臀部不塌不撅，核心全程绷紧</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">下降吸气</span>
+          <span class="breath-tag">推起呼气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：屁股抬高成倒V形、下落到一半就推起、手肘外展过大</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="gifs/pushup_clap.gif" alt="击掌俯卧撑"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 03</span>
+      <div class="exercise-title">击掌俯卧撑（爆发式）</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>标准俯卧撑起始姿势，身体成一条直线</li>
+          <li>核心收紧，做好爆发准备</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作步骤</div>
+        <div class="info-content"><ul>
+          <li>缓慢下落到最低点（离心控制2秒）</li>
+          <li>胸部爆发发力推起，双手短暂离地击掌</li>
+          <li>双手落地缓冲，接下一次</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">下落吸气</span>
+          <span class="breath-tag">爆发推起呼气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：下落太快不控制、落地时硬砸不缓冲、身体晃动失去平衡</div>
+    </div>
+  </div>
+
+  <div class="category-title">腿部训练</div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="gifs/squat.gif" alt="自重深蹲"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 04</span>
+      <div class="exercise-title">自重深蹲</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>双脚与肩同宽，脚尖向外打开约15–30度</li>
+          <li>胸部挺直，目视前方，双手前平举保持平衡</li>
+          <li>重心落在足跟和足中之间</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作步骤</div>
+        <div class="info-content"><ul>
+          <li>下蹲：臀部向后向下坐，膝盖跟随脚尖方向</li>
+          <li>蹲至大腿与地面平行，背部保持挺直</li>
+          <li>站起：脚跟发力蹬地，臀部收紧站起</li>
+          <li>节奏：下蹲2秒，底部停1秒，站起1秒</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">下蹲吸气</span>
+          <span class="breath-tag">站起呼气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：膝盖内扣、脚跟离地、弯腰弓背、重心前移到脚尖</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/lunge_reverse.jpg" alt="后撤箭步蹲"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 05</span>
+      <div class="exercise-title">后撤箭步蹲（分腿蹲）</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>站立，双脚与髋同宽，双手叉腰</li>
+          <li>上身挺直，核心收紧</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作步骤</div>
+        <div class="info-content"><ul>
+          <li>一条腿向后撤步，前腿屈膝下蹲</li>
+          <li>前腿大腿与地面平行，前膝不超过脚尖</li>
+          <li>后膝接近地面但不砸地，前脚跟蹬地站起</li>
+          <li>左右腿交替进行</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">下蹲吸气</span>
+          <span class="breath-tag">站起呼气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：前膝超过脚尖太多、身体前倾弯腰、步幅太小变成半蹲</div>
+    </div>
+  </div>
+
+  <div class="category-title">背部与核心</div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="gifs/row.gif" alt="背包俯身划船"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 06</span>
+      <div class="exercise-title">背包俯身划船</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>弯腰俯身，背部平直不弯腰，约45度角</li>
+          <li>双肩包装书（5kg起步），双手握住背包肩带</li>
+          <li>核心收紧，稳定骨盆</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作步骤</div>
+        <div class="info-content"><ul>
+          <li>单臂将背包向上提，肘部向后拉向髋部</li>
+          <li>肩胛骨后缩夹紧，顶峰收缩1秒</li>
+          <li>缓慢下放还原，左右交替</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">下放吸气</span>
+          <span class="breath-tag">拉起呼气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：圆背弯腰、用腰部甩动借力、肘部向外飞（应该贴身向后）</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/glute_bridge.jpg" alt="臀桥"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 07</span>
+      <div class="exercise-title">臀桥</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>仰卧在垫子上，双腿弯曲，双脚踩地与肩同宽</li>
+          <li>双手放在身体两侧，掌心向下</li>
+          <li>脚跟距离臀部约一掌距离</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作步骤</div>
+        <div class="info-content"><ul>
+          <li>臀部发力顶起，直到肩、髋、膝成一条直线</li>
+          <li>顶端夹紧臀部1–2秒，感受臀大肌收缩</li>
+          <li>缓慢下落回到起始位置</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">顶起呼气</span>
+          <span class="breath-tag">下落吸气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：用腰部顶而不是臀部发力、顶端过度反弓腰椎</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="gifs/plank.gif" alt="平板支撑"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">动作 08</span>
+      <div class="exercise-title">平板支撑</div>
+      <div class="info-section">
+        <div class="info-label">起始姿势</div>
+        <div class="info-content"><ul>
+          <li>前臂撑地，肘关节在肩膀正下方</li>
+          <li>身体从头到脚跟成一条直线</li>
+          <li>腹部收紧，臀部夹紧，大腿内侧收紧</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">动作要点</div>
+        <div class="info-content"><ul>
+          <li>静态保持，不要上下晃动</li>
+          <li>均匀呼吸，不要憋气</li>
+          <li>保持腹部像"绷紧一块板"的感觉</li>
+          <li>标准保持时间：30–45秒/组</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">呼吸节奏</div>
+        <div class="info-content">
+          <span class="breath-tag">均匀腹式呼吸</span>
+          <span class="breath-tag">不要憋气</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：塌腰、撅臀、憋气、头抬太高或太低</div>
+    </div>
+  </div>
+
+  <!-- 开髋专项 -->
+  <div class="category-title">开髋专项动作（每次训练前必做，各30–60秒）</div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/hip_wgs.jpg" alt="伟大者伸展"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">开髋 01</span>
+      <div class="exercise-title">伟大者伸展</div>
+      <div class="info-section">
+        <div class="info-label">动作要领</div>
+        <div class="info-content"><ul>
+          <li>前腿弓步下蹲，后侧腿膝盖着地或伸直</li>
+          <li>同侧手肘伸向地面，对侧手向上伸展过头顶</li>
+          <li>抬头转胸椎，感受髋屈肌+胸椎两侧拉伸</li>
+          <li>每侧保持30秒，配合深呼吸</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">拉伸部位</div>
+        <div class="info-content">
+          <span class="breath-tag">髋屈肌</span>
+          <span class="breath-tag">股四头肌</span>
+          <span class="breath-tag">胸椎</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：弯腰弓背、前膝超过脚尖、拉伸时弹震</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/hip_9090.jpg" alt="90/90髋转换"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">开髋 02</span>
+      <div class="exercise-title">90/90 髋转换</div>
+      <div class="info-section">
+        <div class="info-label">动作要领</div>
+        <div class="info-content"><ul>
+          <li>坐在地上，前腿弯曲90度朝前，后腿弯曲90度朝侧</li>
+          <li>上身挺直，双手撑在身体两侧稳定</li>
+          <li>双脚踩实地面，双膝尽量贴地</li>
+          <li>左右交替转换方向，每侧保持30秒</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">拉伸部位</div>
+        <div class="info-content">
+          <span class="breath-tag">臀肌深层</span>
+          <span class="breath-tag">髋外旋</span>
+          <span class="breath-tag">髂胫束</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：上身驼背、膝盖翘起来离开地面、用手硬压</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/hip_kneeling.jpg" alt="半跪髋屈肌拉伸"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">开髋 03</span>
+      <div class="exercise-title">半跪姿髋屈肌拉伸</div>
+      <div class="info-section">
+        <div class="info-label">动作要领</div>
+        <div class="info-content"><ul>
+          <li>前腿弓步站立，后膝跪地（可垫垫子）</li>
+          <li>骨盆后倾（收紧臀部），重心向前移</li>
+          <li>感受后腿大腿根正面的牵拉感</li>
+          <li>每侧保持30–45秒</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">拉伸部位</div>
+        <div class="info-content">
+          <span class="breath-tag">髂腰肌</span>
+          <span class="breath-tag">股四头肌上端</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：塌腰顶髋（应该是骨盆后倾）、前膝超过脚尖</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/hip_squat_deep.jpg" alt="深蹲到底肘推膝"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">开髋 04</span>
+      <div class="exercise-title">深蹲到底 + 肘推膝</div>
+      <div class="info-section">
+        <div class="info-label">动作要领</div>
+        <div class="info-content"><ul>
+          <li>双脚与肩同宽，脚尖外八，蹲到最低位置</li>
+          <li>手肘抵住双膝内侧，用力向外推开膝盖</li>
+          <li>保持背部挺直，重心在足中</li>
+          <li>静态保持45–60秒，配合深呼吸</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">拉伸部位</div>
+        <div class="info-content">
+          <span class="breath-tag">髋内收肌</span>
+          <span class="breath-tag">臀肌</span>
+          <span class="breath-tag">踝关节</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：脚跟离地、弯腰驼背、手肘只是轻轻搭着没用劲</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/hip_clam.jpg" alt="蚌式开合"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">开髋 05</span>
+      <div class="exercise-title">蚌式开合</div>
+      <div class="info-section">
+        <div class="info-label">动作要领</div>
+        <div class="info-content"><ul>
+          <li>侧卧，双腿弯曲约45度，双脚并拢</li>
+          <li>保持双脚贴合不动，上方膝盖向外打开像贝壳</li>
+          <li>骨盆保持垂直不后倒，感受臀中肌收缩</li>
+          <li>每侧15次×3组</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">锻炼部位</div>
+        <div class="info-content">
+          <span class="breath-tag">臀中肌</span>
+          <span class="breath-tag">髋外旋肌群</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：骨盆后倒翻过去、膝盖打开时脚分开、腰部代偿</div>
+    </div>
+  </div>
+
+  <div class="exercise-card">
+    <div class="exercise-gif"><img src="images/hip_pigeon.jpg" alt="鸽式拉伸"></div>
+    <div class="exercise-info">
+      <span class="exercise-number">开髋 06</span>
+      <div class="exercise-title">鸽式拉伸</div>
+      <div class="info-section">
+        <div class="info-label">动作要领</div>
+        <div class="info-content"><ul>
+          <li>前腿弯曲放在身前（小腿尽量横放），后腿伸直向后</li>
+          <li>上身慢慢前倾，手肘撑地，感受臀部深层拉伸</li>
+          <li>前侧髋部下沉，不要掀起来</li>
+          <li>每侧保持45–60秒</li>
+        </ul></div>
+      </div>
+      <div class="info-section">
+        <div class="info-label">拉伸部位</div>
+        <div class="info-content">
+          <span class="breath-tag">梨状肌</span>
+          <span class="breath-tag">臀大肌深层</span>
+          <span class="breath-tag">髋外旋</span>
+        </div>
+      </div>
+      <div class="common-mistake">常见错误：前腿放太近变横叉、身体歪向一侧、强行下压弹震</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============ 打卡数据管理 ============
+const STORAGE_KEY = 'fitness_checkin_dates';
+let checkinDates = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let currentViewYear = new Date().getFullYear();
+let currentViewMonth = new Date().getMonth();
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(checkinDates));
+}
+
+function isChecked(dateStr) {
+  return checkinDates.includes(dateStr);
+}
+
+// 计算连续打卡天数
+function calcStreak() {
+  if (checkinDates.length === 0) return 0;
+  const sorted = [...checkinDates].sort().reverse();
+  let streak = 0;
+  let checkDate = new Date();
+  // 如果今天没打，从昨天开始算
+  if (!isChecked(todayStr())) {
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+  while (true) {
+    const ds = `${checkDate.getFullYear()}-${String(checkDate.getMonth()+1).padStart(2,'0')}-${String(checkDate.getDate()).padStart(2,'0')}`;
+    if (checkinDates.includes(ds)) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+// 计算本周打卡天数（周一到周日）
+function calcWeekDays() {
+  const now = new Date();
+  const day = now.getDay() || 7; // 周日=7
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - day + 1);
+  let count = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const ds = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if (checkinDates.includes(ds)) count++;
+  }
+  return count;
+}
+
+// 更新统计
+function updateStats() {
+  document.getElementById('streakDays').textContent = calcStreak();
+  document.getElementById('totalDays').textContent = checkinDates.length;
+  document.getElementById('weekDays').textContent = calcWeekDays();
+}
+
+// 更新今日打卡按钮状态
+function updateDayCards() {
+  const today = todayStr();
+  document.querySelectorAll('.day-card').forEach(card => {
+    if (isChecked(today)) {
+      card.classList.add('done');
+      card.querySelector('.day-btn').textContent = '已打卡';
+    } else {
+      card.classList.remove('done');
+      card.querySelector('.day-btn').textContent = '打卡';
+    }
+  });
+}
+
+// 打卡按钮点击
+document.querySelectorAll('.day-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const today = todayStr();
+    if (isChecked(today)) {
+      // 取消打卡
+      checkinDates = checkinDates.filter(d => d !== today);
+    } else {
+      checkinDates.push(today);
+    }
+    saveData();
+    updateStats();
+    updateDayCards();
+    renderCalendar();
+  });
+});
+
+// ============ 日历渲染 ============
+function renderCalendar() {
+  const year = currentViewYear;
+  const month = currentViewMonth;
+  document.getElementById('calendarMonth').textContent = `${year}年${month+1}月`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+
+  const container = document.getElementById('calendarCells');
+  container.innerHTML = '';
+
+  // 上月填充
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const cell = document.createElement('div');
+    cell.className = 'calendar-cell other-month';
+    cell.textContent = prevMonthDays - i;
+    container.appendChild(cell);
+  }
+
+  // 本月
+  const today = todayStr();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'calendar-cell';
+    cell.textContent = d;
+    if (isChecked(ds)) cell.classList.add('checked');
+    if (ds === today) cell.classList.add('today');
+    container.appendChild(cell);
+  }
+
+  // 下月填充补满7列
+  const totalCells = firstDay + daysInMonth;
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let i = 1; i <= remaining; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'calendar-cell other-month';
+    cell.textContent = i;
+    container.appendChild(cell);
+  }
+}
+
+document.getElementById('prevMonth').addEventListener('click', () => {
+  currentViewMonth--;
+  if (currentViewMonth < 0) { currentViewMonth = 11; currentViewYear--; }
+  renderCalendar();
+});
+document.getElementById('nextMonth').addEventListener('click', () => {
+  currentViewMonth++;
+  if (currentViewMonth > 11) { currentViewMonth = 0; currentViewYear++; }
+  renderCalendar();
+});
+
+// 初始化
+updateStats();
+updateDayCards();
+renderCalendar();
+</script>
 </body>
 </html>

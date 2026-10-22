@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>火车的主页</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f6f8fa; color: #1f2328; line-height: 1.7;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0969da 0%, #1a7f37 100%);
+      color: #fff; text-align: center; padding: 80px 20px 60px;
+    }
+    .avatar {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: rgba(255,255,255,.2); border: 3px solid rgba(255,255,255,.6);
+      color: #fff; font-size: 38px; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .hero h1 { font-size: 34px; margin-bottom: 10px; }
+    .hero p { font-size: 17px; opacity: .92; }
+    .wrap { max-width: 760px; margin: -30px auto 0; padding: 0 20px 40px; }
+    .card {
+      background: #fff; border: 1px solid #d0d7de; border-radius: 14px;
+      padding: 26px 30px; margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(31,35,40,.05);
+    }
+    .card h2 { font-size: 19px; margin-bottom: 14px; color: #0969da; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      background: #ddf4e4; color: #1a7f37; border-radius: 20px;
+      padding: 5px 14px; font-size: 14px; font-weight: 600;
+    }
+    .proj {
+      border: 1px solid #d0d7de; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+    }
+    .proj a { color: #0969da; font-weight: 700; }
+    .proj small { color: #57606a; }
+    a { color: #0969da; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { text-align: center; color: #8b949e; font-size: 14px; padding: 20px 0 50px; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="avatar">火</div>
+    <h1>你好，我是火车</h1>
+    <p>正在学习编程，用 GitHub 记录成长的每一步</p>
+  </div>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>关于我</h2>
+      <p>一个编程初学者，喜欢用代码解决问题。这个主页用来记录我的学习笔记、项目作品和成长轨迹。</p>
+    </div>
+
+    <div class="card">
+      <h2>我正在学</h2>
+      <div class="tags">
+        <span class="tag">Git / GitHub</span>
+        <span class="tag">HTML / CSS</span>
+        <span class="tag">Python</span>
+        <span class="tag">编程基础</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>我的项目</h2>
+      <div class="proj">
+        <a href="https://github.com/Hcdwq123/hello-world" target="_blank">hello-world</a><br>
+        <small>我的第一个 Git 仓库，完成了从建仓到推送的完整流程</small>
+      </div>
+      <div class="proj">
+        <a href="https://hcdwq123.github.io" target="_blank">个人主页</a><br>
+        <small>这个网站本身，基于 GitHub Pages 搭建</small>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>博客（建设中）</h2>
+      <p>接下来会在这里写我的学习笔记，比如《我是怎么配通 GitHub SSH 的》。</p>
+    </div>
+
+    <div class="card">
+      <h2>联系我</h2>
+      <ul style="padding-left:20px;">
+        <li>GitHub：<a href="https://github.com/Hcdwq123" target="_blank">github.com/Hcdwq123</a></li>
+        <li>邮箱：279565247@qq.com</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>用 ❤️ 和 GitHub Pages 制作 · © 2026 火车</footer>
+</body>
+</html>
